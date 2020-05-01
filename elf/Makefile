@@ -2,6 +2,7 @@
 # Typically uses the major version.
 
 ifeq ($(OS),Windows_NT)
+# TODO: check if this works on Windows.
 	SO_NAME_OPT=soname
 else
 	UNAME_S := $(shell uname -s | tr A-Z a-z)
