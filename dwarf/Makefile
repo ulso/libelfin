@@ -1,5 +1,17 @@
 # Changed when ABI backwards compatibility is broken.
 # Typically uses the major version.
+
+ifeq ($(OS),Windows_NT)
+	SO_NAME_OPT=soname
+else
+	UNAME_S := $(shell uname -s | tr A-Z a-z)
+	ifeq ($(UNAME_S),darwin)
+		SO_NAME_OPT=install_name
+	else
+		SO_NAME_OPT=soname
+	endif
+endif
+
 SONAME = 0
 
 CXXFLAGS+=-g -O2 -Werror
@@ -33,7 +45,7 @@ to_string.cc: ../elf/enum-print.py dwarf++.hh data.hh Makefile
 CLEAN += to_string.cc
 
 libdwarf++.so.$(SONAME): $(SRCS:.cc=.o)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -Wl,-soname,$@ -o $@ $^
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -Wl,-$(SO_NAME_OPT),$@ -o $@ $^
 CLEAN += libdwarf++.so.*
 
 libdwarf++.so:
